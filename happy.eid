@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lebaran Digital Card - Gen Z Edition</title>
+    <!-- Menggunakan Font Google: Plus Jakarta Sans untuk vibe modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-glow: #00ff88;
+            --secondary-glow: #60efff;
+            --dark-bg: #0a0f1d;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; /* Mencegah scroll saat animasi partikel */
+        }
+
+        /* Latar belakang gradien bergerak */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a2a4a 0%, #0a0f1d 100%);
+            z-index: -2;
+        }
+
+        .orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+            filter: blur(80px);
+            border-radius: 50%;
+            opacity: 0.2;
+            z-index: -1;
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-20%, -20%); }
+            to { transform: translate(20%, 20%); }
+        }
+
+        /* Container Kartu (Glassmorphism) */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+        }
+
+        /* Ikon & Visual */
+        .icon-container {
+            font-size: 50px;
+            margin-bottom: 20px;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px var(--primary-glow));
+        }
+
+        /* Tipografi */
+        h1 {
+            font-weight: 800;
+            font-size: 2.2rem;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #fff, var(--secondary-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sub-text {
+            color: #8892b0;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--primary-glow);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        /* Tombol Interaktif */
+        .btn {
+            background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Efek Partikel/Kembang Api */
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Footer */
+        .footer-text {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: #444;
+        }
+
+        /* Popup Pesan (Hidden by default) */
+        .hidden-message {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-gradient"></div>
+    <div class="orb"></div>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="card" id="mainCard">
+        <div class="badge">Edisi 1445 H / 2024</div>
+        <div class="icon-container">🌙</div>
+        <h1 id="title">Selamat<br>Idul Fitri!</h1>
+        <!-- Pesan utama diperbarui sesuai permintaan -->
+        <p class="sub-text" id="description">
+            Minal Aidin Wal Faizin<br>Mohon maaf lahir dan batin
+        </p>
+
+        <div id="hiddenSection" class="hidden-message">
+            <p style="color: var(--primary-glow); font-weight: 600; font-size: 1.2rem;">
+                "Makan ketupat bareng teman,<br>Maafin semua khilaf ya kawan!" 🤟
+            </p>
+        </div>
+
+        <button class="btn" id="actionBtn">
+            <span>Tap for Surprise</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        </button>
+
+        <p class="footer-text">Created with love for friends & family</p>
+    </div>
+
+    <script>
+        /**
+         * LOGIK INTERAKTIF
+         */
+        const btn = document.getElementById('actionBtn');
+        const hiddenSection = document.getElementById('hiddenSection');
+        const card = document.getElementById('mainCard');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set ukuran canvas sesuai window
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.onresize = resize;
+        resize();
+
+        // Partikel Kembang Api Sederhana
+        let particles = [];
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 6 - 3;
+                this.speedY = Math.random() * 6 - 3;
+                this.opacity = 1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.opacity -= 0.02;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createExplosion(x, y) {
+            const colors = ['#00ff88', '#60efff', '#ffffff', '#ffed4a'];
+            for (let i = 0; i < 30; i++) {
+                particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                if (p.opacity <= 0) {
+                    particles.splice(i, 1);
+                } else {
+                    p.update();
+                    p.draw();
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Event Klik Tombol
+        btn.addEventListener('click', (e) => {
+            // Tampilkan pesan rahasia
+            hiddenSection.style.display = 'block';
+            btn.innerHTML = '<span>Shared with Love!</span>';
+            btn.style.background = 'transparent';
+            btn.style.border = '2px solid var(--primary-glow)';
+            btn.style.color = 'var(--primary-glow)';
+
+            // Efek kembang api di titik klik atau tengah
+            const rect = btn.getBoundingClientRect();
+            createExplosion(rect.left + rect.width / 2, rect.top);
+            
+            // Suara klik simulasi (haptic vibe jika didukung browser mobile)
+            if (navigator.vibrate) navigator.vibrate(50);
+        });
+
+        // Efek Parallax Ringan saat Mouse Move (Desktop)
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        // Reset posisi kartu saat mouse keluar
+        document.addEventListener('mouseleave', () => {
+            card.style.transform = `rotateY(0deg) rotateX(0deg) translateY(0)`;
+        });
+
+    </script>
+</body>
+</html>
